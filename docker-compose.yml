@@ -1,0 +1,49 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tsumiki-app
+    ports:
+      - "5150:5150"
+    volumes:
+      - .:/app
+      - cargo_cache:/usr/local/cargo/registry
+      - target_cache:/app/target
+    environment:
+      DATABASE_URL: postgres://tsumiki:tsumiki@db:5432/tsumiki_development
+    depends_on:
+      - db
+    tty: true
+
+  frontend:
+    image: node:22-alpine
+    container_name: tsumiki-frontend
+    working_dir: /app
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - frontend_node_modules:/app/node_modules
+    command: sh -c "npm install && npm run dev"
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:5150
+    tty: true
+
+  db:
+    image: postgres:16-alpine
+    container_name: tsumiki-db
+    environment:
+      POSTGRES_USER: tsumiki
+      POSTGRES_PASSWORD: tsumiki
+      POSTGRES_DB: tsumiki_development
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+  cargo_cache:
+  target_cache:
+  frontend_node_modules:
