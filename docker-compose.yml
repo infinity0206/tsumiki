@@ -12,8 +12,11 @@ services:
       - target_cache:/app/target
     environment:
       DATABASE_URL: postgres://tsumiki:tsumiki@db:5432/tsumiki_development
+      SMTP_HOST: mailcatcher
+      SMTP_PORT: 1025
     depends_on:
       - db
+      - mailcatcher
     tty: true
 
   frontend:
@@ -29,6 +32,13 @@ services:
     environment:
       NEXT_PUBLIC_API_URL: http://localhost:5150
     tty: true
+
+  mailcatcher:
+    image: schickling/mailcatcher
+    container_name: tsumiki-mailcatcher
+    ports:
+      - "1080:1080"  # Web UI
+      - "1025:1025"  # SMTP
 
   db:
     image: postgres:16-alpine
