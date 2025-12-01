@@ -18,3 +18,8 @@ target/
 
 *.sqlite
 *.sqlite-*
+
+.vscode/
+/target
+.shuttle*
+Secrets*.toml

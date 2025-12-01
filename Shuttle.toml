@@ -1,0 +1,10 @@
+name = "tsumiki"
+[deploy]
+include = [
+    "config/production.yaml"
+]
+
+[build]
+assets = [
+    "config/production.yaml"
+]
